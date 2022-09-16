@@ -1,4 +1,5 @@
 const express = require('express');
+const routerApi = require('./routes');
 const app = express();
 const port = 3000;
 
@@ -74,6 +75,8 @@ app.get('/clients/:clientID', (req, res) => {
     res.json({ success: false, message: 'User not found' });
   }
 });
+
+routerApi(app);
 
 app.listen(port, () => {
   console.log(`I am ejecuting in port ${port}`);
