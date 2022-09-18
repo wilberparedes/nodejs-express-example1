@@ -1,21 +1,13 @@
 //TODO: generando router especificos
 const express = require('express');
-const faker = require('faker');
+const ProductsService = require('../service/products.service');
 
 /** creando routing propio */
 const router = express.Router();
+const service = new ProductsService();
 
 router.get('/', (req, res) => {
-  const { size } = req.query;
-  const limit = size || 10;
-  const products = [];
-  for (let index = 0; index < limit; index++) {
-    products.push({
-      name: faker.commerce.productName(),
-      price: parseInt(faker.commerce.price(), 10),
-      image: faker.image.imageUrl(),
-    });
-  }
+  const products = service.find();
   res.json(products);
 });
 
@@ -28,19 +20,15 @@ router.get('/filter', (req, res) => {
 
 /** ENDPOINT DINÁMICO */
 router.get('/:id', (req, res) => {
-  console.log('req.params', req.params);
   const { id } = req.params;
-  if (id === '999') {
+  const product = service.findOne(id);
+  if (!product) {
     res.status(404).json({
-      message: 'not found',
+      message: 'product not found',
       success: false,
     });
   } else {
-    res.status(200).json({
-      id,
-      name: 'Product 2',
-      price: 2000,
-    });
+    res.status(200).json(product);
   }
 });
 
