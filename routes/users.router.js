@@ -1,30 +1,7 @@
 const express = require('express');
-
+const UserService = require('../service/users.service');
 const router = express.Router();
-
-const USERS = [
-  {
-    id: 1,
-    name: 'client 1',
-    country: 'Colombia',
-    city: 'Soledad',
-    age: '35 years old',
-  },
-  {
-    id: 2,
-    name: 'client 2',
-    country: 'Colombia',
-    city: 'Barranquilla',
-    age: '30 years old',
-  },
-  {
-    id: 3,
-    name: 'client 3',
-    country: 'Colombia',
-    city: 'Malambo',
-    age: '28 years old',
-  },
-];
+const service = new UserService();
 
 /* users - obtener query params
  * http://localhost:3000/users?limit=10&offset=200
@@ -32,21 +9,21 @@ const USERS = [
  */
 router.get('/', (req, res) => {
   const { limit, offset } = req.query;
-
+  const users = service.find();
   if (limit && offset) {
     res.json({
       limit,
       offset,
-      data: USERS,
+      data: users,
     });
   } else {
-    res.json(USERS);
+    res.json(users);
   }
 });
 
 router.get('/:userID', (req, res) => {
   const { userID } = req.params;
-  const getUser = USERS.find((client) => client.id === Number(userID));
+  const getUser = service.findOne(userID);
   if (getUser) {
     res.json(getUser);
   } else {
