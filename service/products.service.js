@@ -1,4 +1,6 @@
 const faker = require('faker');
+const boom = require('@hapi/boom');
+
 class ProductsService {
   constructor() {
     //para manejar todos los datos en memoria
@@ -36,13 +38,15 @@ class ProductsService {
   }
 
   async findOne(id) {
-    return this.products.find((product) => product.id === id);
+    const product = this.products.find((product) => product.id === id);
+    if (!product) throw new Error('product not found');
+    return product;
   }
 
   async update(id, changes) {
     const index = this.products.findIndex((product) => product.id === id);
     if (index === -1) {
-      throw new Error('product not found');
+      throw boom.notFound('product not found!!');
     }
     const product = this.products[index];
     this.products[index] = { ...product, ...changes };
@@ -52,7 +56,7 @@ class ProductsService {
   async delete(id) {
     const index = this.products.findIndex((product) => product.id === id);
     if (index === -1) {
-      throw new Error('product not found');
+      throw boom.notFound('product not found!!');
     }
     this.products.splice(index, 1);
     return { success: true, message: 'product deleted successfully' };
