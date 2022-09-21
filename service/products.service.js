@@ -39,14 +39,14 @@ class ProductsService {
 
   async findOne(id) {
     const product = this.products.find((product) => product.id === id);
-    if (!product) throw new Error('product not found');
+    if (!product) throw boom.notFound('product not found!!');
     return product;
   }
 
   async update(id, changes) {
     const index = this.products.findIndex((product) => product.id === id);
     if (index === -1) {
-      throw boom.notFound('product not found!!');
+      throw boom.notFound('product not found');
     }
     const product = this.products[index];
     this.products[index] = { ...product, ...changes };

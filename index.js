@@ -3,7 +3,11 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 require('./routes')(app);
-const { logErrors, errorHandler } = require('./middlewares/error.handler');
+const {
+  logErrors,
+  errorHandler,
+  boomErrorHandler,
+} = require('./middlewares/error.handler');
 
 /** los middleware de errores se deben de importar después de las rutas */
 const port = 3000;
@@ -22,6 +26,7 @@ app.get('/nueva-ruta', (req, res) => {
  * el uno detrás del otro
  */
 app.use(logErrors);
+app.use(boomErrorHandler);
 app.use(errorHandler);
 
 app.listen(port, () => {
