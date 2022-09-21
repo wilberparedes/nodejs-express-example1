@@ -1,5 +1,5 @@
 const faker = require('faker');
-const boom = require('@hapi/boom');
+const boom = require('@hapi/boom'); //https://hapi.dev/module/boom/api/?v=9.1.4#http-4xx-errors
 
 class ProductsService {
   constructor() {
@@ -15,6 +15,7 @@ class ProductsService {
         name: faker.commerce.productName(),
         price: parseInt(faker.commerce.price(), 10),
         image: faker.image.imageUrl(),
+        isBlock: faker.datatype.boolean(),
       });
     }
   }
@@ -40,6 +41,8 @@ class ProductsService {
   async findOne(id) {
     const product = this.products.find((product) => product.id === id);
     if (!product) throw boom.notFound('product not found!!');
+
+    if (product.isBlock) throw boom.conflict('product is block');
     return product;
   }
 
