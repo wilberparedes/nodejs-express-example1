@@ -19,16 +19,24 @@ router.get('/filter', (req, res) => {
 });
 
 /** ENDPOINT DINÁMICO */
-router.get('/:id', async (req, res) => {
-  const { id } = req.params;
-  const product = await service.findOne(id);
-  if (!product) {
-    res.status(404).json({
-      message: 'product not found',
-      success: false,
-    });
-  } else {
+router.get('/:id', async (req, res, next) => {
+  // const { id } = req.params;
+  // const product = await service.findOne(id);
+  // if (!product) {
+  //   res.status(404).json({
+  //     message: 'product not found',
+  //     success: false,
+  //   });
+  // } else {
+  //   res.status(200).json(product);
+  // }
+  try {
+    const { id } = req.params;
+    const product = await service.findOne(id);
     res.status(200).json(product);
+  } catch (error) {
+    // de esta manera ejecutamos el middleware de forma explicita
+    next(error);
   }
 });
 

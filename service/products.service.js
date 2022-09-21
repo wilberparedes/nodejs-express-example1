@@ -27,6 +27,7 @@ class ProductsService {
   }
 
   async find() {
+    // eslint-disable-next-line no-unused-vars
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve(this.products);
@@ -35,6 +36,7 @@ class ProductsService {
   }
 
   async findOne(id) {
+    const name = this.getTotal();
     return this.products.find((product) => product.id === id);
   }
 
