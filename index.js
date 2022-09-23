@@ -1,16 +1,27 @@
 const express = require('express');
-
-const app = express();
-app.use(express.json());
-require('./routes')(app);
+const cors = require('cors');
+const routerApi = require('./routes');
 const {
   logErrors,
   errorHandler,
   boomErrorHandler,
 } = require('./middlewares/error.handler');
 
-/** los middleware de errores se deben de importar después de las rutas */
+const app = express();
 const port = 3000;
+
+const whitelist = ['http://127.0.0.1:5500', 'http://ejemplodedominio.co'];
+const options = {
+  origin: (origin, callback) => {
+    if (whitelist.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('no permitido jaja'));
+    }
+  },
+};
+app.use(express.json());
+app.use(cors(options));
 
 app.get('/', (req, res) => {
   //response send to client
@@ -20,6 +31,9 @@ app.get('/', (req, res) => {
 app.get('/nueva-ruta', (req, res) => {
   res.send('Hola una nueva ruta');
 });
+
+/** los middleware de errores se deben de importar después de las rutas */
+routerApi(app);
 
 /**
  * en este orden se ejecutará
